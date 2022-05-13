@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  app-service:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    environment: 
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/school?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: school
+      SPRING_DATASOURCE_PASSWORD: school
+    networks:
+      - backend  
+
+  mysql:
+    image: mysql/mysql-server
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 'secret'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_PASSWORD: school
+      MYSQL_USER: school
+      MYSQL_DATABASE: school
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - backend
+
+volumes:
+  db-data:
+
+networks:
+  backend:
